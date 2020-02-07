@@ -24,4 +24,6 @@
 - `https://github.com/protocolbuffers/protobuf/releases` 安装`protoc`
 - `go get -u github.com/golang/protobuf/protoc-gen-go` 安装`go-protoc`
 
+安装之后 即可修改`proto/servers.proto`
+
 
