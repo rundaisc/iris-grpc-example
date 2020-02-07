@@ -1,0 +1,27 @@
+syntax = "proto3";
+package proto;
+message Id {
+    int32 id=1;
+}
+message Name {
+    string name=1;
+}
+message Age {
+    int32 age=1;
+}
+// 用户变量
+message User {
+    Id id=1 ;
+    Name name=2;
+    Age age=3;
+}
+// 用户参数
+message UserParams{
+    Name name=1;
+    Age age=2;
+}
+// 声明那些方法可以使用rpc
+service ServiceSearch{
+    rpc SaveUser(UserParams) returns (Id){}
+    rpc UserInfo(Id) returns (User){}
+}
