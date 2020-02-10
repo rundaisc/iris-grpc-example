@@ -33,6 +33,6 @@ func (Service *ServiceSearch) SaveUser(ctx context.Context, params *proto.UserPa
 }
 
 func (Service *ServiceSearch) UserInfo(ctx context.Context, id *proto.Id) (*proto.User, error) {
-	res := &proto.User{Id: id, Name: &proto.Name{Name: "test"}, Age: &proto.Age{Age: 31}}
+	res := &proto.User{Id: id.GetId(), Name: "test", Age: 31}
 	return res, nil
 }

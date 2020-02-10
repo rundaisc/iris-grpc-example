@@ -11,9 +11,9 @@ message Age {
 }
 // 用户变量
 message User {
-    Id id=1 ;
-    Name name=2;
-    Age age=3;
+    int32 id=1;
+    string name=2;
+    int32 age=3;
 }
 // 用户参数
 message UserParams{
