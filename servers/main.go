@@ -24,14 +24,14 @@ func saveUser(ctx iris.Context) {
 	params.Name = &proto.Name{Name: "test"}
 	res, err := client.SaveUser(context.Background(), &params)
 	if err != nil {
-		log.Fatalf("client.Search err: %v", err)
+		log.Fatalf("client.saveUser err: %v", err)
 	}
 	ctx.JSON(res)
 }
 func userInfo(ctx iris.Context) {
 	res, err := client.UserInfo(context.Background(), &proto.Id{Id: 1})
 	if err != nil {
-		log.Fatalf("client.Search err: %v", err)
+		log.Fatalf("client.userInfo err: %v", err)
 	}
 	ctx.JSON(res)
 }
