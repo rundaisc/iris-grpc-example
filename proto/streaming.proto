@@ -1,0 +1,35 @@
+syntax = "proto3";
+package proto;
+
+service StreamService {
+    rpc OrderList(OrderSearchParams) returns (stream StreamOrderList){}; //服务端流式
+    rpc UploadFile(stream StreamImageList) returns (uploadResponse){}; //客户端流式
+    rpc SumData(stream StreamSumData) returns (stream StreamSumData){}; //双向流式
+}
+message Order {
+    int32 id = 1;
+    string orderSn = 2;
+    string date = 3;
+}
+message StreamOrderList{
+    Order order = 1;
+}
+message OrderSearchParams {
+}
+message Image{
+    string fileName = 1;
+    string file = 2;
+}
+message StreamImageList{
+     Image image = 1;
+}
+message uploadResponse{
+}
+message StreamSumData{
+    int32 number = 1;
+}
+
+
+
+
+
