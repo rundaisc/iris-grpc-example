@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"google.golang.org/grpc"
+	"io"
 	"iris-grpc-example/proto"
 	"log"
 	"net"
@@ -38,6 +40,17 @@ func (services *StreamServices) OrderList(params *proto.OrderSearchParams, strea
 }
 
 func (services *StreamServices) UploadFile(stream proto.StreamService_UploadFileServer) error {
+	for  {
+		 res,err := stream.Recv()
+		 //接收消息结束，发送结果，并关闭
+		if err == io.EOF {
+			return stream.SendAndClose(&proto.UploadResponse{})
+		}
+		if err !=nil {
+			return err
+		}
+		fmt.Println(res)
+	}
 	return nil
 }
 

@@ -7,11 +7,10 @@ import (
 	"io"
 	"iris-grpc-example/proto"
 	"log"
-	"time"
+	"strconv"
 )
 
 var streamClient proto.StreamServiceClient
-
 func main() {
 	app := iris.New()
 	app.Logger().SetLevel("debug") //debug
@@ -50,12 +49,38 @@ func orderList(ctx iris.Context) {
 		}
 		ctx.JSON(res)
 		log.Println(res)
-		time.Sleep(time.Second)
 	}
 }
 
 func uploadImage(ctx iris.Context) {
-
+	stream,err := streamClient.UploadFile(context.Background())
+	if err != nil {
+		ctx.JSON(map[string]string{
+			"err": err.Error(),
+		})
+		return
+	}
+	for i:=1;i<=10 ; i++ {
+		img := &proto.Image{FileName:"image"+strconv.Itoa(i),File:"file data"}
+		images := &proto.StreamImageList{Image:img}
+		err := stream.Send(images)
+		if err != nil {
+			ctx.JSON(map[string]string{
+				"err": err.Error(),
+			})
+			return
+		}
+	}
+	//发送完毕 关闭并获取服务端返回的消息
+	resp, err := stream.CloseAndRecv()
+	if err != nil {
+		ctx.JSON(map[string]string{
+			"err": err.Error(),
+		})
+		return
+	}
+	ctx.JSON(map[string]interface{}{"result": resp,"message":"success"})
+	log.Println(resp)
 }
 
 func sumData(ctx iris.Context) {
