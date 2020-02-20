@@ -11,6 +11,7 @@ import (
 )
 
 var streamClient proto.StreamServiceClient
+
 func main() {
 	app := iris.New()
 	app.Logger().SetLevel("debug") //debug
@@ -53,16 +54,16 @@ func orderList(ctx iris.Context) {
 }
 
 func uploadImage(ctx iris.Context) {
-	stream,err := streamClient.UploadFile(context.Background())
+	stream, err := streamClient.UploadFile(context.Background())
 	if err != nil {
 		ctx.JSON(map[string]string{
 			"err": err.Error(),
 		})
 		return
 	}
-	for i:=1;i<=10 ; i++ {
-		img := &proto.Image{FileName:"image"+strconv.Itoa(i),File:"file data"}
-		images := &proto.StreamImageList{Image:img}
+	for i := 1; i <= 10; i++ {
+		img := &proto.Image{FileName: "image" + strconv.Itoa(i), File: "file data"}
+		images := &proto.StreamImageList{Image: img}
 		err := stream.Send(images)
 		if err != nil {
 			ctx.JSON(map[string]string{
@@ -79,10 +80,35 @@ func uploadImage(ctx iris.Context) {
 		})
 		return
 	}
-	ctx.JSON(map[string]interface{}{"result": resp,"message":"success"})
+	ctx.JSON(map[string]interface{}{"result": resp, "message": "success"})
 	log.Println(resp)
 }
 
 func sumData(ctx iris.Context) {
-
+	stream, err := streamClient.SumData(context.Background())
+	if err != nil {
+		ctx.JSON(map[string]string{
+			"err": err.Error(),
+		})
+		return
+	}
+	for i := 1; i <= 10; i++ {
+		err = stream.Send(&proto.StreamSumData{Number: int32(i)})
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return
+		}
+		res, err := stream.Recv()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return
+		}
+		log.Printf("res number:%d", res.Number)
+	}
+	stream.CloseSend()
+	return
 }

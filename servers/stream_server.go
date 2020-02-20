@@ -40,13 +40,13 @@ func (services *StreamServices) OrderList(params *proto.OrderSearchParams, strea
 }
 
 func (services *StreamServices) UploadFile(stream proto.StreamService_UploadFileServer) error {
-	for  {
-		 res,err := stream.Recv()
-		 //接收消息结束，发送结果，并关闭
+	for {
+		res, err := stream.Recv()
+		//接收消息结束，发送结果，并关闭
 		if err == io.EOF {
 			return stream.SendAndClose(&proto.UploadResponse{})
 		}
-		if err !=nil {
+		if err != nil {
 			return err
 		}
 		fmt.Println(res)
@@ -55,5 +55,17 @@ func (services *StreamServices) UploadFile(stream proto.StreamService_UploadFile
 }
 
 func (services *StreamServices) SumData(stream proto.StreamService_SumDataServer) error {
-	return nil
+	i := 0
+	for {
+		err := stream.Send(&proto.StreamSumData{Number: int32(i)})
+		if err != nil {
+			return err
+		}
+		res, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		log.Printf("res:%d,i:%d,sum:%d\r\n", res.Number, i, int32(i)+res.Number)
+		i++
+	}
 }
